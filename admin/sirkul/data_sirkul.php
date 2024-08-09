@@ -1,3 +1,17 @@
+<?php
+$koneksi = new mysqli("localhost", "root", "", "perpustakaan");
+
+// Mendapatkan ID pengguna yang sedang login
+$id_pengguna = $_SESSION['ses_id'];
+
+// Ambil ID anggota berdasarkan ID pengguna
+$query_anggota = "SELECT id_anggota FROM tb_anggota WHERE id_pengguna = '$id_pengguna'";
+$result_anggota = $koneksi->query($query_anggota);
+$anggota = $result_anggota->fetch_assoc();
+$id_anggota = $anggota['id_anggota'];
+
+?>
+
 <section class="content-header">
 	<h1>
 		Sirkulasi
@@ -6,131 +20,112 @@
 </section>
 <!-- Main content -->
 <section class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header">
-			<a href="?page=add_sirkul" title="Tambah Data" class="btn btn-primary">
-				<i class="glyphicon glyphicon-plus"></i> Tambah Data</a>
-		</div>
-		<!-- /.box-header -->
-		<div class="card-body">
-			<div class="table-responsive">
-				<table id="example1" class="table table-bordered table-striped">
-					<thead>
-						<tr>
-							<th>No</th>
-							<th>ID SKL</th>
-							<th>Buku</th>
-							<th>Peminjam</th>
-							<th>Tgl Pinjam</th>
-							<th>Jatuh Tempo</th>
-							<th>Denda</th>
-							<th>Kelola</th>
-						</tr>
-					</thead>
-					<tbody>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<a href="?page=add_sirkul" title="Tambah Data" class="btn btn-primary">
+							<i class="glyphicon glyphicon-plus"></i> Tambah Data</a>
+					</div>
+					<!-- /.box-header -->
+					<div class="card-body">
+						<div class="table-responsive">
+							<table id="example1" class="table table-bordered table-striped">
+								<thead>
+									<tr>
+										<th>No</th>
+										<th>ID SKL</th>
+										<th>Buku</th>
+										<th>Peminjam</th>
+										<th>Tgl Pinjam</th>
+										<th>Jatuh Tempo</th>
+										<th>Denda</th>
+										<th>Kelola</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php
+									$no = 1;
+									$sql = $koneksi->query("
+                                        SELECT s.id_sk, b.judul_buku,
+                                               a.id_anggota,
+                                               a.nama,
+                                               s.tgl_pinjam, 
+                                               s.tgl_kembali
+                                        FROM tb_sirkulasi s 
+                                        INNER JOIN tb_buku b ON s.id_buku = b.id_buku
+                                        INNER JOIN tb_anggota a ON s.id_anggota = a.id_anggota
+                                        WHERE s.status = 'PIN' AND s.id_anggota = '$id_anggota'
+                                        ORDER BY s.tgl_pinjam DESC
+                                    ");
+									while ($data = $sql->fetch_assoc()) {
+									?>
 
-						<?php
-						$koneksi = new mysqli ("localhost","root","","perpustakaan");
-						$no = 1;
-						$sql = $koneksi->query("SELECT s.id_sk, b.judul_buku,
-				  a.id_anggota,
-				  a.nama,
-				  s.tgl_pinjam, 
-				  s.tgl_kembali
-                  from tb_sirkulasi s inner join tb_buku b on s.id_buku=b.id_buku
-				  inner join tb_anggota a on s.id_anggota=a.id_anggota where status='PIN' order by tgl_pinjam desc");
-						while ($data = $sql->fetch_assoc()) {
-						?>
+										<tr>
+											<td><?php echo $no++; ?></td>
+											<td><?php echo $data['id_sk']; ?></td>
+											<td><?php echo $data['judul_buku']; ?></td>
+											<td><?php echo $data['id_anggota']; ?> - <?php echo $data['nama']; ?></td>
+											<td><?php $tgl = $data['tgl_pinjam'];
+												echo date("d/M/Y", strtotime($tgl)) ?></td>
+											<td><?php $tgl = $data['tgl_kembali'];
+												echo date("d/M/Y", strtotime($tgl)) ?></td>
 
-							<tr>
-								<td>
-									<?php echo $no++; ?>
-								</td>
-								<td>
-									<?php echo $data['id_sk']; ?>
-								</td>
-								<td>
-									<?php echo $data['judul_buku']; ?>
-								</td>
-								<td>
-									<?php echo $data['id_anggota']; ?>
-									-
-									<?php echo $data['nama']; ?>
-								</td>
-								<td>
-									<?php $tgl = $data['tgl_pinjam'];
-									echo date("d/M/Y", strtotime($tgl)) ?>
-								</td>
-								<td>
-									<?php $tgl = $data['tgl_kembali'];
-									echo date("d/M/Y", strtotime($tgl)) ?>
-								</td>
+											<?php
+											$u_denda = 1000;
+											$tgl1 = date("Y-m-d");
+											$tgl2 = $data['tgl_kembali'];
 
-								<?php
+											$pecah1 = explode("-", $tgl1);
+											$date1 = $pecah1[2];
+											$month1 = $pecah1[1];
+											$year1 = $pecah1[0];
 
-								$u_denda = 1000;
+											$pecah2 = explode("-", $tgl2);
+											$date2 = $pecah2[2];
+											$month2 = $pecah2[1];
+											$year2 =  $pecah2[0];
 
-								$tgl1 = date("Y-m-d");
-								$tgl2 = $data['tgl_kembali'];
+											$jd1 = GregorianToJD($month1, $date1, $year1);
+											$jd2 = GregorianToJD($month2, $date2, $year2);
 
-								$pecah1 = explode("-", $tgl1);
-								$date1 = $pecah1[2];
-								$month1 = $pecah1[1];
-								$year1 = $pecah1[0];
+											$selisih = $jd1 - $jd2;
+											$denda = $selisih * $u_denda;
+											?>
 
-								$pecah2 = explode("-", $tgl2);
-								$date2 = $pecah2[2];
-								$month2 = $pecah2[1];
-								$year2 =  $pecah2[0];
+											<td>
+												<?php if ($selisih <= 0) { ?>
+													<span class="label label-primary">Masa Peminjaman</span>
+												<?php } elseif ($selisih > 0) { ?>
+													<span class="label label-danger">Rp. <?= $denda ?></span><br> Terlambat : <?= $selisih ?> Hari
+												<?php } ?>
+											</td>
 
-								$jd1 = GregorianToJD($month1, $date1, $year1);
-								$jd2 = GregorianToJD($month2, $date2, $year2);
-
-								$selisih = $jd1 - $jd2;
-								$denda = $selisih * $u_denda;
-								?>
-
-								<td>
-									<?php if ($selisih <= 0) { ?>
-										<span class="label label-primary">Masa Peminjaman</span>
-									<?php } elseif ($selisih > 0) { ?>
-										<span class="label label-danger">
-											Rp.
-											<?= $denda ?>
-										</span>
-										<br> Terlambat :
-										<?= $selisih ?>
-										Hari
-								</td>
-							<?php } ?>
-
-							<td>
-								<a href="?page=panjang&kode=<?php echo $data['id_sk']; ?>" onclick="return confirm('Perpanjang Data Ini ?')" title="Perpanjang" class="btn btn-success">
-								<i class="fas fa-arrow-up"></i>
-								</a>
-								<a href="?page=kembali&kode=<?php echo $data['id_sk']; ?>" onclick="return confirm('Kembalikan Buku Ini ?')" title="Kembalikan" class="btn btn-danger">
-								<i class="fas fa-arrow-down"></i>
-							</td>
-							</tr>
-						<?php
-						}
-						?>
-					</tbody>
-
-				</table>
+											<td>
+												<a href="?page=panjang&kode=<?php echo $data['id_sk']; ?>" onclick="return confirm('Perpanjang Data Ini ?')" title="Perpanjang" class="btn btn-success">
+													<i class="fas fa-arrow-up"></i>
+												</a>
+												<a href="?page=kembali&kode=<?php echo $data['id_sk']; ?>" onclick="return confirm('Kembalikan Buku Ini ?')" title="Kembalikan" class="btn btn-danger">
+													<i class="fas fa-arrow-down"></i>
+												</a>
+											</td>
+										</tr>
+									<?php
+									}
+									?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- /.card-body -->
 				</div>
-              </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-          </div>
-          <!-- /.col -->
-        </div>
-        <!-- /.row -->
-      </div>
+				<!-- /.card -->
+			</div>
+			<!-- /.col -->
+		</div>
+		<!-- /.row -->
+	</div>
 	<h4> *Note
 		<br> Masa peminjaman buku adalah <span style="color:red; font-weight:bold;">7 hari</span> dari tanggal peminjaman.
 		<br> Jika buku dikembalikan lebih dari masa peminjaman, maka akan dikenakan <span style="color:red; font-weight:bold;">denda</span>
