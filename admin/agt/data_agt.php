@@ -11,10 +11,8 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-              <a href="?page=MyApp/add_agt" title="Tambah Data" class="btn btn-primary">
-				<i class="glyphicon glyphicon-plus"></i> Tambah Data</a>
 			<a href="?page=MyApp/print_allagt" title="Print" class="btn btn-success" stlye="color : green;">
-				<i class="glyphicon glyphicon-print"></i>Print</a>
+				<i class="glyphicon glyphicon-print"></i>Print Semua Data</a>
 		</div>
 		<!-- /.box-header -->
 		<div class="box-body">

@@ -1,6 +1,12 @@
+
 <?php
 // Kode 9 digit
 $koneksi = new mysqli ("localhost","root","","perpustakaan");
+
+// Mendapatkan ID pengguna yang sedang login
+$id_pengguna = $_SESSION['ses_id'];
+
+// Ambil data ID terakhir dari tb_sirkulasi
 $carikode = mysqli_query($koneksi, "SELECT id_sk FROM tb_sirkulasi ORDER BY id_sk DESC");
 $datakode = mysqli_fetch_array($carikode);
 $kode = $datakode['id_sk'];
@@ -16,6 +22,11 @@ if (strlen($tambah) == 1){
 } else {
     $format = "S".$tambah;
 }
+
+// Ambil data anggota yang sedang login
+$query_anggota = "SELECT * FROM tb_anggota WHERE id_pengguna = '$id_pengguna'";
+$result_anggota = mysqli_query($koneksi, $query_anggota);
+$anggota = mysqli_fetch_array($result_anggota);
 ?>
 
 <section class="content-header">
@@ -44,21 +55,8 @@ if (strlen($tambah) == 1){
 
                         <div class="form-group">
                             <label>Nama Peminjam</label>
-                            <select name="id_anggota" id="id_anggota" class="form-control select2" style="width: 100%;">
-                                <option selected="selected">-- Pilih --</option>
-                                <?php
-                                // Ambil data dari database
-                                $query = "SELECT * FROM tb_anggota";
-                                $hasil = mysqli_query($koneksi, $query);
-                                while ($row = mysqli_fetch_array($hasil)) {
-                                ?>
-                                    <option value="<?php echo $row['id_anggota'] ?>">
-                                        <?php echo $row['id_anggota'] ?> - <?php echo $row['nama'] ?>
-                                    </option>
-                                <?php
-                                }
-                                ?>
-                            </select>
+                            <input type="text" name="nama_peminjam" id="nama_peminjam" class="form-control" value="<?php echo $anggota['nama']; ?>" readonly />
+                            <input type="hidden" name="id_anggota" value="<?php echo $anggota['id_anggota']; ?>" />
                         </div>
 
                         <div class="form-group">

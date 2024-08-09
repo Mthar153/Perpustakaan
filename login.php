@@ -45,7 +45,7 @@ include "koneksi/koneksi.php";
       <?php if (isset($error)) echo "<p class='error'>$error</p>"; ?>
       <form action="" method="post">
         <div class="input-group mb-3">
-          <input type="username" name="username" class="form-control" placeholder="username" required>
+          <input type="username" name="username" class="form-control" placeholder="Username" required>
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>

@@ -138,15 +138,6 @@ if (isset($_SESSION["ses_username"]) == "") {
           </li>
 
           <li class="nav-item">
-            <a href="?page=data_sirkul" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                Sirkulasi
-              </p>
-            </a>
-          </li>
-
-          <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fa fa-book"></i>
               <p>
@@ -231,15 +222,6 @@ if (isset($_SESSION["ses_username"]) == "") {
                 </a>
               </li>
             </ul>
-          </li>
-
-          <li class="nav-item">
-            <a href="?page=data_sirkul" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p>
-                Sirkulasi
-              </p>
-            </a>
           </li>
 
           <li class="nav-item">
