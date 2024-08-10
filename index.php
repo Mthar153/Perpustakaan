@@ -1,12 +1,4 @@
 <?php
-// session_start();
-// if (!isset($_SESSION['loggedin'])) {
-//     header('Location: login.php');
-//     exit;
-// }
-
-// $level = $_SESSION['level'];
-// $username = $_SESSION['username'];
 //Mulai Sesion
 session_start();
 if (isset($_SESSION["ses_username"]) == "") {
@@ -416,7 +408,7 @@ if (isset($_SESSION["ses_username"]) == "") {
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
-    <strong>Copyright &copy; 2024 Victor</strong>
+    <strong>Copyright &copy; 2024 Kelompok 1</strong>
   </footer>
 
   <!-- Control Sidebar -->
